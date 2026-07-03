@@ -56,6 +56,7 @@ Message requirements:
 - Do not explain anything
 - Output only the final WhatsApp message
 - Only if situatuion is no website then always say 'noticed you have any web site or your not on online or something like this '
+- In end say 'i have something for if your interted then i share demo website which suits on your bussiness or your whatever situation' or something like this similear
 
 Avoid:
 - "Dear Sir/Madam"
