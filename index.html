@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Replacer</title>
+
+    <style>
+        :root {
+            --bg-1: #f8fbff;
+            --bg-2: #eef6ff;
+            --card-bg: rgba(255, 255, 255, 0.74);
+            --text: #0f172a;
+            --muted: #475569;
+            --border: rgba(148, 163, 184, 0.25);
+            --primary: #2563eb;
+            --primary-dark: #4f46e5;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --shadow: 0 20px 60px rgba(15, 23, 42, 0.14);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: clamp(16px, 4vw, 44px);
+            overflow-x: hidden;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, .18), transparent 30%),
+                radial-gradient(circle at 90% 10%, rgba(168, 85, 247, .18), transparent 30%),
+                radial-gradient(circle at 80% 90%, rgba(34, 197, 94, .15), transparent 25%),
+                radial-gradient(circle at 20% 80%, rgba(236, 72, 153, .12), transparent 25%),
+                linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        }
+
+        .bg-shapes {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .75;
+            animation: float 15s ease-in-out infinite alternate;
+        }
+
+        .c1 {
+            width: clamp(220px, 35vw, 420px);
+            height: clamp(220px, 35vw, 420px);
+            background: #60a5fa;
+            top: -150px;
+            left: -120px;
+        }
+
+        .c2 {
+            width: clamp(200px, 30vw, 340px);
+            height: clamp(200px, 30vw, 340px);
+            background: #8b5cf6;
+            right: -100px;
+            top: 50px;
+        }
+
+        .c3 {
+            width: clamp(190px, 28vw, 300px);
+            height: clamp(190px, 28vw, 300px);
+            background: #22c55e;
+            bottom: -120px;
+            left: 45%;
+        }
+
+        @keyframes float {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(30px, 40px);
+            }
+        }
+
+        .page {
+            width: min(100%, 1120px);
+            min-height: calc(100vh - clamp(32px, 8vw, 88px));
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: start;
+            gap: clamp(18px, 3vw, 32px);
+        }
+
+        .card {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: clamp(20px, 3vw, 30px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: var(--shadow), inset 0 1px 1px rgba(255, 255, 255, .6);
+        }
+
+        .card h2 {
+            font-size: clamp(20px, 2.5vw, 26px);
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .card p {
+            margin-top: -8px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-weight: 700;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid transparent;
+            outline: none;
+            border-radius: var(--radius-md);
+            padding: 14px;
+            background: rgba(255, 255, 255, .92);
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.45;
+            transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #64748b 50%),
+                linear-gradient(135deg, #64748b 50%, transparent 50%);
+            background-position:
+                calc(100% - 20px) 50%,
+                calc(100% - 14px) 50%;
+            background-size: 6px 6px, 6px 6px;
+            background-repeat: no-repeat;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            background: #fff;
+            border-color: rgba(37, 99, 235, .35);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, .35);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(37, 99, 235, .42);
+        }
+
+        button:active {
+            transform: scale(.98);
+        }
+
+        #output {
+            min-height: 190px;
+        }
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: 1fr;
+                max-width: 560px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .page {
+                min-height: auto;
+                gap: 16px;
+            }
+
+            .card {
+                gap: 15px;
+                border-radius: 20px;
+            }
+
+            input,
+            textarea,
+            select,
+            button {
+                font-size: 14px;
+                padding: 12px;
+                border-radius: 12px;
+            }
+            
+            textarea {
+                min-height: 130px;
+            }
+
+            #output {
+                min-height: 160px;
+            }
+
+            .circle {
+                filter: blur(70px);
+                opacity: .6;
+            }
+
+            .c1 {
+                top: -100px;
+                left: -120px;
+            }
+
+            .c2 {
+                right: -130px;
+                top: 130px;
+            }
+
+            .c3 {
+                left: 10%;
+                bottom: -140px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
+        </style>
+</head>
+
+<body>
+    <div class="bg-shapes" aria-hidden="true">
+        <span class="circle c1"></span>
+        <span class="circle c2"></span>
+        <span class="circle c3"></span>
+    </div>
+    
+    <main class="page">
+        <section class="card generator-card">
+            <h2>AI Message Generator</h2>
+            <p>Create a short professional message based on business type and situation.</p>
+        
+            <label for="businessName">
+                Business Name
+                <input id="businessName" placeholder="Business name or $" value="$">
+            </label>
+        
+            <label for="category">
+                Category
+                <select id="category">
+                    <option>Dental Clinic</option>
+                    <option>School</option>
+                    <option>Gym</option>
+                    <option>Manufacturer</option>
+                </select>
+            </label>
+        
+            <label for="situation">
+                Situation
+                <select id="situation">
+                    <option>No Website</option>
+                    <option>Outdated Website</option>
+                    <option>Not Responsive Website</option>
+                </select>
+            </label>
+        
+            <button type="button" onclick="generateMessage()">Generate Message</button>
+        
+            <label for="output">
+                Generated Message
+                <textarea id="output" rows="8"></textarea>
+            </label>
+        </section>
+        <section class="card main">
+            <h2>Message Replacer</h2>
+            <p>Replace $ and # in your message, then copy it or send it on WhatsApp.</p>
+
+            <label for="messageText">
+                Message
+                <textarea id="messageText" placeholder="Example:
+Hello $
+Welcome to #
+Regards,
+$"></textarea>
+            </label>
+
+            <label for="nameInput">
+                Replace ($)
+                <input type="text" id="nameInput" placeholder="Example: Avinash">
+            </label>
+
+            <label for="hashInput">
+                Replace (#)
+                <input type="text" id="hashInput" placeholder="Example: Delhi">
+            </label>
+
+            <label for="myText">
+                After
+                <textarea id="myText" readonly></textarea>
+            </label>
+
+            <button id="copyBtn" type="button">📋 Copy</button>
+
+            <label for="mobileInput">
+                Mobile Number
+                <input type="tel" id="mobileInput" placeholder="e.g. 919876543210" required>
+            </label>
+
+            <button id="whatsappBtn" type="button">💬 Send on WhatsApp</button>
+        </section>
+
+    </main>
+
+    <script>
+        const messageText = document.getElementById("messageText");
+        const nameInput = document.getElementById("nameInput");
+        const hashInput = document.getElementById("hashInput");
+        const output = document.getElementById("myText");
+        const copyBtn = document.getElementById("copyBtn");
+
+        function clean(value) {
+            return value.replace(/[^a-zA-Z0-9 .,!?'"()\-@#&_:;/\n]/g, "");
+        }
+
+        function updateText() {
+            nameInput.value = clean(nameInput.value);
+            hashInput.value = clean(hashInput.value);
+
+            let text = messageText.value;
+
+            text = text.replaceAll("$", nameInput.value);
+            text = text.replaceAll("#", hashInput.value);
+
+            output.value = text;
+        }
+
+        messageText.addEventListener("input", updateText);
+        nameInput.addEventListener("input", updateText);
+        hashInput.addEventListener("input", updateText);
+
+        copyBtn.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(output.value);
+                copyBtn.innerHTML = "✅ Copied!";
+
+                setTimeout(() => {
+                    copyBtn.innerHTML = "📋 Copy";
+                }, 2000);
+            } catch {
+                alert("Failed to copy.");
+            }
+        });
+
+        const mobileInput = document.getElementById("mobileInput");
+        const whatsappBtn = document.getElementById("whatsappBtn");
+
+        mobileInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "");
+        });
+
+        whatsappBtn.addEventListener("click", () => {
+            const mobile = mobileInput.value.trim();
+
+            if (!mobile) {
+                alert("Please enter a mobile number.");
+                return;
+            }
+
+            if (!output.value.trim()) {
+                alert("Message is empty.");
+                return;
+            }
+
+            const message = encodeURIComponent(output.value);
+            window.open(`https://wa.me/${mobile}?text=${message}`, "_blank");
+        });
+    </script>
+
+    <script>
+        async function generateMessage() {
+            const businessName = document.getElementById("businessName").value;
+            const category = document.getElementById("category").value;
+            const situation = document.getElementById("situation").value;
+            const output = document.getElementById("output");
+
+            output.value = "Generating...";
+
+            try {
+                const res = await fetch("http://localhost:5000/api/generate-message", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        businessName,
+                        category,
+                        situation,
+                        tone: "Professional",
+                        length: "Short",
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    output.value = data.error || "Something went wrong";
+                    return;
+                }
+
+                output.value = data.message;
+            } catch (error) {
+                output.value = "Backend is not running or API failed.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>
