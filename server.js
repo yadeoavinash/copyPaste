@@ -55,6 +55,7 @@ Message requirements:
 - Do not say "I am AI"
 - Do not explain anything
 - Output only the final WhatsApp message
+- Only if situatuion is no website then always say 'noticed you have any web site or your not on online or something like this '
 
 Avoid:
 - "Dear Sir/Madam"
