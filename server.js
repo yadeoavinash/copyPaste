@@ -69,7 +69,7 @@ Avoid:
 
 Example style:
 Hello, I came across ${businessName} while searching online.I am Avinash a web devloper who help bussiness to grow online. A modern website can help patients learn about your services and contact your clinic more easily. I recently created a demo for ${category} businesses. Would you like me to share it?
-
+(first say your ${businessName} dont have website after that then say i am a web devloper)
 Now write a different message.
 `;
 
