@@ -58,6 +58,8 @@ Message requirements:
 - Only if situatuion is no website then always say 'noticed you have any web site or your not on online or something like this '
 - In end say 'i have something for if your interted then i share demo website which suits on your bussiness or your whatever situation' or something like this similear
 - Also after english msg add one more msg in the end with hinglish translation of english msg
+- First say your ${businessName} dont have website after that then say i am a web devloper (First business name then introduce i am a web devloper)
+- For dental clinics add features like: online appointment booking , map , whatsApp integration , better online visiblity, SEO and etc.
 Avoid:
 - "Dear Sir/Madam"
 - "Best website"
